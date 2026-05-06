@@ -56,14 +56,14 @@ l3build install
 \makecover
 
 % 中文摘要
-\begin{abstract}
+\begin{cnabstract}
 本文研究了基于深度学习的图像识别方法...
-\end{abstract}
+\end{cnabstract}
 
 % 英文摘要
-\begin{englishabstract}
+\begin{enabstract}
 This paper studies image recognition methods based on deep learning...
-\end{englishabstract}
+\end{enabstract}
 
 % 目录
 \tableofcontents
