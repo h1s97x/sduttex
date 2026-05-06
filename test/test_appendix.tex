@@ -1,0 +1,29 @@
+% test_appendix.tex - 附录测试
+% 测试附录环境
+\documentclass{dtxthesis}
+\usepackage{test_bib}
+\begin{document}
+
+% 封面
+\makecover
+
+% 目录
+\tableofcontents
+
+% 附录测试
+\appendix
+\chapter{附录A 代码}
+这是附录A的内容。
+
+\section{主要代码}
+这里可以放主要代码。
+
+\lstinputlisting[language=C]{test_bib.bib}
+
+\chapter{附录B 数据}
+这是附录B的内容。
+
+% 参考文献
+\printbibliography
+
+\end{document}
