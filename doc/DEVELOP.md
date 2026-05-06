@@ -24,8 +24,8 @@ sudo apt install texlive-full
 ### 克隆仓库
 
 ```bash
-git clone https://github.com/h1s97x/sduttex.git
-cd sduttex
+git clone https://github.com/h1s97x/sdutex.git
+cd sdutex
 ```
 
 ## 构建命令

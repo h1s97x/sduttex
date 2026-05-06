@@ -3,14 +3,14 @@
 山东大学 LaTeX 论文模板核心包 | Shandong University LaTeX Thesis Template Core Package
 
 [![License](https://img.shields.io/badge/license-LPPL-blue.svg)](https://www.latex-project.org/lppl/)
-[![GitHub stars](https://img.shields.io/github/stars/h1s97x/sduttex)](https://github.com/h1s97x/sduttex/stargazers)
-[![GitHub issues](https://img.shields.io/github/issues/h1s97x/sduttex)](https://github.com/h1s97x/sduttex/issues)
+[![GitHub stars](https://img.shields.io/github/stars/h1s97x/sdutex)](https://github.com/h1s97x/sdutex/stargazers)
+[![GitHub issues](https://img.shields.io/github/issues/h1s97x/sdutex)](https://github.com/h1s97x/sdutex/issues)
 
 ## 简介
 
 SDUTeX 是山东大学学位论文 LaTeX 模板的核心代码仓库，提供：
 - `sduthesis.cls` - 学位论文文档类
-- `sduttex.sty` - 工具宏包
+- `sdutex.sty` - 工具宏包
 - `sduthesis.bst` - 参考文献样式 (GB/T 7714-2015)
 
 ## 特性
@@ -78,11 +78,11 @@ This paper studies image recognition methods based on deep learning...
 ## 目录结构
 
 ```
-sduttex/
+sdutex/
 ├── src/                    # 源代码
 │   ├── sduthesis.dtx       # 论文文档类
 │   ├── sduthesis.ins       # 安装脚本
-│   ├── sduttex.sty         # 工具宏包
+│   ├── sdutex.sty         # 工具宏包
 │   └── sduthesis.bst       # 参考文献样式
 ├── test/                   # 测试用例
 ├── doc/                    # 开发者文档
@@ -141,4 +141,4 @@ l3build ctan      # 打包 CTAN
 
 ## 联系方式
 
-- GitHub Issues: [h1s97x/sduttex](https://github.com/h1s97x/sduttex/issues)
+- GitHub Issues: [h1s97x/sdutex](https://github.com/h1s97x/sdutex/issues)

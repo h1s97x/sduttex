@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Basic cover page generation
   - Table of contents
   - Abstract environments (Chinese and English)
-- `sduttex.sty` - Utility package
+- `sdutex.sty` - Utility package
   - Math tools
   - Float tools
   - Format tools

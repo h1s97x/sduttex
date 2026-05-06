@@ -139,7 +139,7 @@
     - 图表间距
     - 公式间距
 
-### src/sduttex.sty
+### src/sdutex.sty
 
 工具宏包，提供辅助功能：
 

@@ -5,7 +5,7 @@
 -- 山东大学 LaTeX 核心包构建系统
 --
 
-module = "sduttex"
+module = "sdutex"
 
 -- 源代码目录
 sourcefiledir = "src"
@@ -36,15 +36,15 @@ recordstatus = true
 
 -- CTAN 发布设置
 packtdszip = true
-ctanpkg = "sduttex"
-ctanpath = "latex/sduttex"
+ctanpkg = "sdutex"
+ctanpath = "latex/sdutex"
 
 -- TDS 目录结构
 tdslocations = {
-  "tex/latex/sduttex/sduthesis.cls",
-  "tex/latex/sduttex/sduttex.sty",
-  "tex/latex/sduttex/sduthesis.bst",
-  "tex/latex/sduttex/sduthesis-*.def"
+  "tex/latex/sdutex/sduthesis.cls",
+  "tex/latex/sdutex/sdutex.sty",
+  "tex/latex/sdutex/sduthesis.bst",
+  "tex/latex/sdutex/sduthesis-*.def"
 }
 
 -- Git 版本信息

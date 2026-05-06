@@ -4,17 +4,17 @@
 
 SDUTeX 是山东大学 LaTeX 论文模板的核心包，提供：
 - 学位论文文档类 (`sduthesis.cls`)
-- 工具宏包 (`sduttex.sty`)
+- 工具宏包 (`sdutex.sty`)
 - 参考文献样式 (`sduthesis.bst`)
 
 ## 仓库结构
 
 ```
-sduttex/
+sdutex/
 ├── src/                    # 源代码
 │   ├── sduthesis.dtx       # 论文文档类（DTX格式）
 │   ├── sduthesis.ins       # 安装脚本
-│   ├── sduttex.sty         # 工具宏包
+│   ├── sdutex.sty         # 工具宏包
 │   └── sduthesis.bst       # 参考文献样式
 ├── test/                   # 测试用例
 │   ├── test_cover.tex      # 封面测试
