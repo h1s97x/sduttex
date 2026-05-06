@@ -1,0 +1,245 @@
+%%
+%% SDUTeX - 山东大学 LaTeX 工具宏包
+%% https://github.com/h1s97x/sduttex
+%%
+%% Copyright (C) 2024 SDU LaTeX Contributors
+%%
+%% This work may be distributed and/or modified under the conditions
+%% of the LaTeX Project Public License, either version 1.3 of this
+%% license or (at your option) any later version.
+%% The latest version of this license is in
+%%   https://www.latex-project.org/lppl.txt
+%% and version 1.3c or later is part of all distributions of LaTeX
+%% version 2008-05-04 or later.
+%%
+%% This work has the LPPL maintenance status "maintained".
+%%
+%% The Current Maintainer of this work is SDU LaTeX Contributors.
+%%
+%% This work consists of the files listed in the companion file
+%% sduthesis.dtx and the other files listed in the header of that file.
+%%
+%% 宏包选项：
+%% - math     : 加载数学工具
+%% - float    : 加载浮动体工具
+%% - format   : 加载格式工具
+%% - all      : 加载所有工具
+%%
+%%\NeedsTeXFormat{LaTeX2e}
+%%\ProvidesPackage{sduttex}[2024/01/01 SDU LaTeX Tool Package]
+
+\RequirePackage{expl3}
+\RequirePackage{l3keys2e}
+
+%% ============================================================
+%% 宏包选项定义
+%% ============================================================
+
+% 选项开关
+\bool_new:N \g__sdut_math_bool
+\bool_new:N \g__sdut_float_bool
+\bool_new:N \g__sdut_format_bool
+
+% 默认全部加载
+\bool_set_true:N \g__sdut_math_bool
+\bool_set_true:N \g__sdut_float_bool
+\bool_set_true:N \g__sdut_format_bool
+
+% 键值选项
+\keys_define:nn { sdut / option } {
+  math    .bool_set:N = \g__sdut_math_bool,
+  float   .bool_set:N = \g__sdut_float_bool,
+  format  .bool_set:N = \g__sdut_format_bool,
+  all     .choice:,
+  none    .code:n = {
+    \bool_set_false:N \g__sdut_math_bool
+    \bool_set_false:N \g__sdut_float_bool
+    \bool_set_false:N \g__sdut_format_bool
+  }
+}
+
+% 处理选项
+\ProcessKeysOptions { sdut / option }
+
+%% ============================================================
+%% 数学工具模块
+%% ============================================================
+
+\bool_if:NT \g__sdut_math_bool {
+  
+  % 数学符号宏
+  \cs_new:Npn \@SDUT@的自然数集 {\mathbb{N}}
+  \cs_new:Npn \@SDUT@的整数集 {\mathbb{Z}}
+  \cs_new:Npn \@SDUT@的有理数集 {\mathbb{Q}}
+  \cs_new:Npn \@SDUT@的实数集 {\mathbb{R}}
+  \cs_new:Npn \@SDUT@的复数集 {\mathbb{C}}
+  
+  % 用户级接口
+  \cs_new:Npn \SDUT@mathbb #1 {
+    \text{\USEInstance{mathbb}{#1}}
+  }
+  
+  % 短命令：数集
+  \cs_set:Npn \N {\@SDUT@的自然数集}
+  \cs_set:Npn \Z {\@SDUT@的整数集}
+  \cs_set:Npn \Q {\@SDUT@的有理数集}
+  \cs_set:Npn \R {\@SDUT@的实数集}
+  \cs_set:Npn \C {\@SDUT@的复数集}
+  
+  % 带编号的公式引用
+  \cs_new:Npn \SDUT@eqref #1 {
+    equation~\ref{#1}
+  }
+  
+  % 定理环境增强
+  \cs_new:Npn \SDUT@begintheorem #1 #2 {
+    \trivlist
+    \item[\hskip \labelsep {\bfseries #1\ #2}] \itshape
+  }
+  
+  % 可加编号域的列表环境
+  \cs_new:Npn \SDUT@itemize {
+    \enumerate
+  }
+  \cs_new:Npn \SDUT@enditemize {
+    \endenumerate
+  }
+  
+}
+
+%% ============================================================
+%% 浮动体工具模块
+%% ============================================================
+
+\bool_if:NT \g__sdut_float_bool {
+  
+  % 浮动体位置控制
+  \cs_new:Npn \SDUT@floatbox {
+    \skip_horizontal:n { 1em }
+    \hspace{*-1em}
+  }
+  
+  % 图表宽松间距
+  \cs_new:Npn \SDUT@setfloatskip {
+    \setlength{\textfloatsep}{12pt plus 3pt minus 2pt}
+    \setlength{\intextsep}{12pt plus 3pt minus 2pt}
+    \setlength{\floatsep}{12pt plus 3pt minus 2pt}
+  }
+  
+  % 图片宏包设置
+  \AtBeginDocument {
+    \@ifpackageloaded{graphicx}{
+      \g@addto@macro\@ listings@opt {
+        , keepspaces=true
+        , basicstyle=\ttfamily\small
+      }
+    }{}
+  }
+  
+  % subfig 兼容设置
+  \@ifpackageloaded{subfig}{
+    \captionsetup{subfloatgap=4pt}
+  }{}
+  
+  % subcaption 兼容设置
+  \@ifpackageloaded{subcaption}{
+    \captionsetup[sub]{margin=0pt}
+  }{}
+  
+}
+
+%% ============================================================
+%% 格式工具模块
+%% ============================================================
+
+\bool_if:NT \g__sdut_format_bool {
+  
+  % 中英文混排间距
+  \cs_new:Npn \SDUT@textCJK {
+    \RequirePackage{xeCJKfntef}
+    \xeCJKsetup{
+      CJKspace=true,
+      CJKmath=true
+    }
+  }
+  
+  % URL 样式
+  \cs_new:Npn \SDUT@urlsetup {
+    \urlstyle{same}
+  }
+  
+  % 列表缩进调整
+  \cs_new:Npn \SDUT@setlist {
+    \setlength{\itemsep}{3pt}
+    \setlength{\parsep}{3pt}
+    \setlength{\parskip}{0pt}
+  }
+  
+  % 段落间距
+  \cs_new:Npn \SDUT@setparagraph {
+    \setlength{\parindent}{2em}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}
+  }
+  
+  % 应用设置
+  \SDUT@setlist
+  \SDUT@setparagraph
+  
+}
+
+%% ============================================================
+%% 工具函数
+%% ============================================================
+
+% 检查是否为空
+\prg_new_conditional:Npnn \sdut_if_empty:n #1 { p, T, F, TF } {
+  \tl_if_empty:nTF {#1} {
+    \prg_return_true:
+  } {
+    \prg_return_false:
+  }
+}
+
+% 检查是否为奇数
+\prg_new_conditional:Npnn \sdut_if_odd:n #1 { p, T, F, TF } {
+  \int_if_odd:nTF {#1} {
+    \prg_return_true:
+  } {
+    \prg_return_false:
+  }
+}
+
+% 安全的宽度计算
+\cs_new:Npn \sdut_safe_width:n #1 {
+  \dim_eval:n { \max_dimen }
+}
+
+% 带单位的数字
+\cs_new:Npn \sdut_length:nn #1#2 {
+  \dim_to_decimal_in_unit:nn {#1} {#2} #2
+}
+
+%% ============================================================
+%% 版本信息
+%% ============================================================
+
+\tl_const:Nn \c__sdut_version_tl { 0.1.0 }
+\tl_const:Nn \c__sdut_date_tl { 2024/01/01 }
+
+\msg_new:nnn { sduttex } { version } {
+  SDUTeX~v\c__sdut_version_tl\\
+  山东大学~LaTeX~工具宏包\\
+  Updated:~2014/\c__sdut_date_tl
+}
+
+%% 调试模式输出版本信息
+\@ifundefined{if@test}
+  {}
+  {
+    \typeout{*
+      SDUTeX~v\c__sdut_version_tl~
+      ( Shandong~University~LaTeX~Package )
+    *}
+  }
+
+\endinput

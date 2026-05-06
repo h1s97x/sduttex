@@ -1,6 +1,5 @@
-# LaTeX 生成文件
+# LaTeX 生成文件（这些由 .dtx/.ins 解包生成）
 *.cls
-*.sty
 *.def
 *.bst
 *.aux
