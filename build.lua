@@ -32,7 +32,23 @@ unpackfiles = {"src/sduthesis.dtx"}
 checkruns = 3
 checkengines = {"xetex"}
 checkopts = "-file-line-error -halt-on-error -interaction=nonstopmode"
+stdengine = "xetex"
 recordstatus = true
+
+-- 测试文件目录
+testfiledir = ""
+testfiles = {
+  "test/test_cover.tex",
+  "test/test_abstract.tex",
+  "test/test_math.tex",
+  "test/test_float.tex",
+  "test/test_bib.tex",
+  "test/test_full.tex",
+  "test/test_appendix.tex",
+  "test/test_acknowledgement.tex",
+  "test/test_graduate.tex",
+  "test/test_blind.tex"
+}
 
 -- CTAN 发布设置
 packtdszip = true
