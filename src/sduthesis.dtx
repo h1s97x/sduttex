@@ -70,6 +70,8 @@
 %%    \begin{macrocode}
 %<!CLASS>
 \int_new:N \g_@@_type_int
+\int_new:N \g_@@_type_major_int
+\int_new:N \g_@@_type_professional_int
 %    \end{macrocode}
 %% \end{variable}
 %%
@@ -95,15 +97,28 @@
 \tl_new:N \g_@@_title_tl
 \tl_new:N \g_@@_title_en_tl
 \tl_new:N \g_@@_author_tl
+\tl_new:N \g_@@_author_en_tl
 \tl_new:N \g_@@_student_id_tl
+\tl_new:N \g_@@_school_tl
 \tl_new:N \g_@@_major_tl
-\tl_new:N \g_@@_department_tl
+\tl_new:N \g_@@_major_en_tl
 \tl_new:N \g_@@_supervisor_tl
 \tl_new:N \g_@@_supervisor_title_tl
 \tl_new:N \g_@@_co_supervisor_tl
+\tl_new:N \g_@@_supervisor_en_tl
+\tl_new:N \g_@@_co_supervisor_en_tl
 \tl_new:N \g_@@_date_tl
-\tl_new:N \g_@@_keywords_tl
-\tl_new:N \g_@@_keywords_en_tl
+\tl_new:N \g_@@_cn_keywords_tl
+\tl_new:N \g_@@_en_keywords_tl
+\tl_new:N \g_@@_abstract_tl
+\tl_new:N \g_@@_abstract_en_tl
+%    \end{macrocode}
+%%
+%% Layout variables.
+%%    \begin{macrocode}
+%<!CLASS>
+\dim_new:N \g_@@_cover_label_width_dim
+\dim_new:N \g_@@_cover_value_width_dim
 %    \end{macrocode}
 %%
 %% ===================================================================
@@ -122,12 +137,32 @@
 %    \end{macrocode}
 %% \end{function}
 %%
-%% \begin{function}{\@@_if_type_graduate:TF}
-%% 判断是否为研究生（硕士或博士）
+%% \begin{function}{\@@_if_type_master:TF}
+%% 判断是否为硕士
 %%    \begin{macrocode}
 %<!CLASS>
-\cs_new:Npn \@@_if_type_graduate:TF #1#2 {
-  \int_compare:nNnTF {1} < {\g_@@_type_int} {#1} {#2}
+\cs_new:Npn \@@_if_type_master:TF #1#2 {
+  \int_compare:nNnTF {1} < {\g_@@_type_int} { \int_compare:nNnTF {4} > {\g_@@_type_int} {#1} {#2} } {#2}
+}
+%    \end{macrocode}
+%% \end{function}
+%%
+%% \begin{function}{\@@_if_type_doctor:TF}
+%% 判断是否为博士
+%%    \begin{macrocode}
+%<!CLASS>
+\cs_new:Npn \@@_if_type_doctor:TF #1#2 {
+  \int_compare:nNnTF {\g_@@_type_int} = {4} {#1} {#2}
+}
+%    \end{macrocode}
+%% \end{function}
+%%
+%% \begin{function}{\@@_if_type_professional:TF}
+%% 判断是否为专业型
+%%    \begin{macrocode}
+%<!CLASS>
+\cs_new:Npn \@@_if_type_professional:TF #1#2 {
+  \int_compare:nNnTF {\g_@@_type_int} = {3} {#1} {#2}
 }
 %    \end{macrocode}
 %% \end{function}
@@ -148,9 +183,25 @@
 %<!CLASS>
 \cs_new:Npn \@@_secret_info:n #1 {
   \@@_if_blind:TF {
-    \prg_replicate:nn { \tl_count:n {#1} } { $\square$ }
+    \leavevmode\CJKcircle { 1 }
   } {
     #1
+  }
+}
+%    \end{macrocode}
+%% \end{function}
+%%
+%% \begin{function}{\@@_secret_info_fixed:Nn}
+%% 固定长度隐藏（用于学号等）
+%%    \begin{macrocode}
+%<!CLASS>
+\cs_new:Npn \@@_secret_info_fixed:Nn #1#2 {
+  \tl_if_blank:VTF #1 { } {
+    \@@_if_blind:TF {
+      \prg_replicate:nn {#2} { \CJKcircle { 1 } }
+    } {
+      #1
+    }
   }
 }
 %    \end{macrocode}
@@ -166,20 +217,11 @@
 %%    \begin{macrocode}
 %<!CLASS>
 \keys_define:nn { sdu / option } {
-  degree .choice:,
+  degree .choices:nn = { bachelor, master, professional, doctor } {
+    \int_gset:Nn \g_@@_type_int {\l_keys_choice_int}
+  },
   degree .value_required:n = true,
-  degree / bachelor .code:n = {
-    \int_gset:Nn \g_@@_type_int {1}
-  },
-  degree / master .code:n = {
-    \int_gset:Nn \g_@@_type_int {2}
-  },
-  degree / master-professional .code:n = {
-    \int_gset:Nn \g_@@_type_int {3}
-  },
-  degree / doctor .code:n = {
-    \int_gset:Nn \g_@@_type_int {4}
-  },
+  degree .initial:n = {bachelor},
   blind .bool_set:N = \g_@@_blind_bool,
   blind .initial:n = {false},
   twoside .bool_set:N = \g_@@_twoside_bool,
@@ -268,11 +310,10 @@
 \setmonofont{Consolas}
 %    \end{macrocode}
 %%
-%% Set bibliography style.
+%% Set bibliography style (use custom .bst).
 %%    \begin{macrocode}
 %<!CLASS>
-\RequirePackage[sort&compress]{gbt7714}
-\ bibliographystyle{gbt7714-numerical}
+\bibliographystyle{sduthesis}
 %    \end{macrocode}
 %%
 %% Set algorithm style.
@@ -294,15 +335,19 @@
   title .tl_gset:N = \g_@@_title_tl,
   title* .tl_gset:N = \g_@@_title_en_tl,
   author .tl_gset:N = \g_@@_author_tl,
+  author* .tl_gset:N = \g_@@_author_en_tl,
   student-id .tl_gset:N = \g_@@_student_id_tl,
+  school .tl_gset:N = \g_@@_school_tl,
   major .tl_gset:N = \g_@@_major_tl,
-  department .tl_gset:N = \g_@@_department_tl,
+  major* .tl_gset:N = \g_@@_major_en_tl,
   supervisor .tl_gset:N = \g_@@_supervisor_tl,
   supervisor-title .tl_gset:N = \g_@@_supervisor_title_tl,
+  supervisor* .tl_gset:N = \g_@@_supervisor_en_tl,
   co-supervisor .tl_gset:N = \g_@@_co_supervisor_tl,
+  co-supervisor* .tl_gset:N = \g_@@_co_supervisor_en_tl,
   date .tl_gset:N = \g_@@_date_tl,
-  keywords .tl_gset:N = \g_@@_keywords_tl,
-  keywords* .tl_gset:N = \g_@@_keywords_en_tl,
+  keywords .tl_gset:N = \g_@@_cn_keywords_tl,
+  keywords* .tl_gset:N = \g_@@_en_keywords_tl,
 }
 %    \end{macrocode}
 %%
@@ -316,27 +361,295 @@
 %    \end{macrocode}
 %% \end{function}
 %%
+%% Getter commands.
+%%    \begin{macrocode}
+%<!CLASS>
+\NewDocumentCommand \GetTitle { } { \tl_use:N \g_@@_title_tl }
+\NewDocumentCommand \GetTitleEn { } { \tl_use:N \g_@@_title_en_tl }
+\NewDocumentCommand \GetAuthor { } { \tl_use:N \g_@@_author_tl }
+\NewDocumentCommand \GetAuthorEn { } { \tl_use:N \g_@@_author_en_tl }
+\NewDocumentCommand \GetStudentId { } { \tl_use:N \g_@@_student_id_tl }
+\NewDocumentCommand \GetSchool { } { \tl_use:N \g_@@_school_tl }
+\NewDocumentCommand \GetMajor { } { \tl_use:N \g_@@_major_tl }
+\NewDocumentCommand \GetMajorEn { } { \tl_use:N \g_@@_major_en_tl }
+\NewDocumentCommand \GetSupervisor { } { \tl_use:N \g_@@_supervisor_tl }
+\NewDocumentCommand \GetSupervisorTitle { } { \tl_use:N \g_@@_supervisor_title_tl }
+\NewDocumentCommand \GetCoSupervisor { } { \tl_use:N \g_@@_co_supervisor_tl }
+\NewDocumentCommand \GetDate { } { \tl_use:N \g_@@_date_tl }
+\NewDocumentCommand \GetCnKeywords { } { \tl_use:N \g_@@_cn_keywords_tl }
+\NewDocumentCommand \GetEnKeywords { } { \tl_use:N \g_@@_en_keywords_tl }
+%    \end{macrocode}
+%%
 %% ===================================================================
-%% Cover Page Commands
+%% Cover Page
 %% ===================================================================
 %%
-%% \subsection{Cover Page Commands}
+%% \subsection{Cover Page}
+%%
+%% Layout constants.
+%%    \begin{macrocode}
+%<!CLASS>
+\dim_gset:Nn \g_@@_cover_label_width_dim { 2.3cm }
+\dim_gset:Nn \g_@@_cover_value_width_dim { 5.5cm }
+%    \end{macrocode}
+%%
+%% Cover table entry.
+%%    \begin{macrocode}
+%<!CLASS>
+\cs_new:Npn \@@_cover_entry:nn #1#2 {
+  \begin{tabular}{p{\g_@@_cover_label_width_dim}p{\g_@@_cover_value_width_dim}}
+    \centering \zihao{3} \bfseries \kaishu {#1} &
+    \centering \zihao{3} \kaishu {#2}
+    \\ \cline{2-2}
+  \end{tabular}
+  \vspace{-5mm}
+}
+%    \end{macrocode}
+%%
+%% Bachelor cover page.
+%%    \begin{macrocode}
+%<!CLASS>
+\cs_new:Npn \@@_make_cover_bachelor: {
+  \begin{titlepage}
+    \begin{center}
+      \vspace*{5mm}
+
+      % University logo
+      \includegraphics[width=0.7\textwidth]{logos/sdu_logo}
+
+      \vspace*{10mm}
+
+      % Title image
+      \includegraphics[width=0.95\textwidth]{logos/sdu_title}
+
+      \vspace*{5mm}
+
+      % Thesis title label
+      \begin{flushleft}
+        \zihao{3} \bfseries \fangsong {论\qquad 文\qquad 题\qquad 目：}
+      \end{flushleft}
+
+      % Thesis title
+      \begin{minipage}{\dim_eval:n { 0.9 \textwidth }}
+        \centering \zihao{2} \bfseries \hei { \GetTitle }
+      \end{minipage}
+
+      \vspace*{30mm}
+
+      % Information table
+      \@@_cover_entry:nn { 姓\qquad 名 } { \@@_secret_info:n { \GetAuthor } }
+      \@@_cover_entry:nn { 学\qquad 号 } { \@@_secret_info_fixed:Nn \g_@@_student_id_tl { 10 } }
+      \@@_cover_entry:nn { 学\qquad 院 } { \GetSchool }
+      \@@_cover_entry:nn { 专\qquad 业 } { \GetMajor }
+      \@@_cover_entry:nn { 指\ 导\ 教\ 师 } { \@@_secret_info:n { \GetSupervisor } }
+
+      \vspace*{35mm}
+
+      % Date
+      \zihao{3} \kaishu { \GetDate }
+    \end{center}
+  \end{titlepage}
+}
+%    \end{macrocode}
+%%
+%% Graduate cover page (master/doctor).
+%%    \begin{macrocode}
+%<!CLASS>
+\cs_new:Npn \@@_make_cover_graduate: {
+  \begin{titlepage}
+    \begin{center}
+      \vspace*{5mm}
+
+      % University logo
+      \includegraphics[width=0.7\textwidth]{logos/sdu_logo}
+
+      \vspace*{10mm}
+
+      % Title image
+      \includegraphics[width=0.95\textwidth]{logos/sdu_title}
+
+      \vspace*{10mm}
+
+      % Thesis type
+      \@@_if_type_professional:TF {
+        \zihao{2} \bfseries \hei { 专业学位（硕士/博士）论文 }
+      } {
+        \zihao{2} \bfseries \hei { 学术学位（硕士/博士）论文 }
+      }
+
+      \vspace*{10mm}
+
+      % Chinese title
+      \begin{minipage}{\dim_eval:n { 0.9 \textwidth }}
+        \centering \zihao{2} \bfseries \hei { \GetTitle }
+      \end{minipage}
+
+      \vspace*{8mm}
+
+      % English title
+      \begin{minipage}{\dim_eval:n { 0.9 \textwidth }}
+        \centering \zihao{4} \hei { \GetTitleEn }
+      \end{minipage}
+
+      \vspace*{15mm}
+
+      % Author info
+      \@@_cover_entry:nn { 研究生姓名 } { \@@_secret_info:n { \GetAuthor } }
+      \@@_cover_entry:nn { 学科专业 } { \GetMajor }
+      \@@_cover_entry:nn { 指导教师 } { \@@_secret_info:n { \GetSupervisor } \，
+                                           \GetSupervisorTitle }
+      \bool_if:NT \g_@@_co_supervisor_tl {
+        \@@_cover_entry:nn { 合作指导教师 } { \@@_secret_info:n { \GetCoSupervisor } }
+      }
+
+      \vspace*{20mm}
+
+      % Date
+      \zihao{3} \kaishu { \GetDate }
+    \end{center}
+  \end{titlepage}
+}
+%    \end{macrocode}
 %%
 %% \begin{function}{\MakeCover}
 %% Generate the cover page.
 %%    \begin{macrocode}
 %<!CLASS>
 \NewDocumentCommand \MakeCover { } {
-  \begin{titlepage}
-    \centering
-    \vspace*{1cm}
-    {\heiti\zihao{1}\SDUSetupTitle\par}
-    \vspace{2cm}
-    % Cover content will be defined in separate files
-  \end{titlepage}
+  \@@_if_type_bachelor:TF {
+    \@@_make_cover_bachelor:
+  } {
+    \@@_make_cover_graduate:
+  }
 }
 %    \end{macrocode}
 %% \end{function}
+%%
+%% ===================================================================
+%% Abstract Environments
+%% ===================================================================
+%%
+%% \subsection{Abstract Environments}
+%%
+%% Chinese abstract.
+%%    \begin{macrocode}
+%<!CLASS>
+\NewDocumentEnvironment { cnabstract } { } {
+  \phantomsection
+  \pdfbookmark[0] { 摘要 } { cnabstract }
+  \begin{center}
+    \zihao{3} \bfseries \hei { 摘\qquad 要 }
+  \end{center}
+  \vspace{12pt}
+  \setlength{\parindent}{1.2em}
+  \zihao{-4}
+}{
+  \vspace{1cm}
+  \par \noindent
+  \zihao{-4} \bfseries \hei { 关键词： }
+  \zihao{-4} \GetCnKeywords
+  \clearpage
+}
+%    \end{macrocode}
+%%
+%% English abstract.
+%%    \begin{macrocode}
+%<!CLASS>
+\NewDocumentEnvironment { enabstract } { } {
+  \phantomsection
+  \pdfbookmark[0] { Abstract } { enabstract }
+  \begin{center}
+    \zihao{-2} \bfseries { ABSTRACT }
+  \end{center}
+  \vspace{12pt}
+  \setlength{\parindent}{1.2em}
+  \zihao{-4}
+}{
+  \vspace{1cm}
+  \par \noindent
+  \zihao{-4} \bfseries { Keywords: }
+  \zihao{-4} \GetEnKeywords
+  \clearpage
+}
+%    \end{macrocode}
+%%
+%% ===================================================================
+%% Declaration
+%% ===================================================================
+%%
+%% \subsection{Declaration}
+%%
+%% Academic declaration.
+%%    \begin{macrocode}
+%<!CLASS>
+\NewDocumentCommand \MakeDeclaration { } {
+  \phantomsection
+  \pdfbookmark[0] { 声明 } { declaration }
+  \begin{center}
+    \zihao{3} \bfseries \hei { 学位论文独创性声明 }
+  \end{center}
+  \vspace{12pt}
+  \setlength{\parindent}{2em}
+  \zihao{-4}
+
+  本人郑重声明，所呈交的学位论文，是本人在导师指导下，独立进
+  行研究工作所取得的研究成果。除文中已经标明引用的内容外，本
+  论文不包含任何其他个人或集体已经发表或撰写过的研究成果。对
+  本文的研究做出贡献的个人和集体，均已在文中以明确方式标明。
+
+  本声明的法律结果由本人承担。
+
+  \vspace{2cm}
+  \hfill
+  \begin{tabular}{lcl}
+    学位论文作者签名： & \hspace{3cm} & \\
+    & & \\
+    日期： & \hspace{3cm} & 年 \hspace{1cm} 月 \hspace{1cm} 日 \\
+  \end{tabular}
+
+  \clearpage
+}
+%    \end{macrocode}
+%%
+%% ===================================================================
+%% Acknowledgement
+%% ===================================================================
+%%
+%% \subsection{Acknowledgement}
+%%
+%% Acknowledgement environment.
+%%    \begin{macrocode}
+%<!CLASS>
+\NewDocumentEnvironment { acknowledgement } { } {
+  \phantomsection
+  \pdfbookmark[0] { 致谢 } { acknowledgement }
+  \begin{center}
+    \zihao{3} \bfseries \hei { 致\qquad 谢 }
+  \end{center}
+  \vspace{12pt}
+  \setlength{\parindent}{2em}
+  \zihao{-4}
+}{
+  \clearpage
+}
+%    \end{macrocode}
+%%
+%% ===================================================================
+%% Appendix
+%% ===================================================================
+%%
+%% \subsection{Appendix}
+%%
+%% Appendix command.
+%%    \begin{macrocode}
+%<!CLASS>
+\NewDocumentCommand \MakeAppendix { } {
+  \appendix
+  \counterwithin { equation } { chapter }
+  \counterwithin { figure } { chapter }
+  \counterwithin { table } { chapter }
+}
+%    \end{macrocode}
 %%
 %% ===================================================================
 %% Section Style
