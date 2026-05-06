@@ -1,0 +1,52 @@
+# LaTeX 生成文件
+*.cls
+*.sty
+*.def
+*.bst
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.toc
+*.lot
+*.lof
+*.xdv
+*.fdb_latexmk
+*.fls
+
+# 编译输出
+build/
+tlpkg/build/
+*.pdf
+
+# 测试输出
+test/*.aux
+test/*.log
+test/*.out
+test/*.toc
+test/*.bbl
+test/*.blg
+test/*.xdv
+
+# DS_Store
+.DS_Store
+Thumbs.db
+
+# 编辑器
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# 本地安装
+local/
+
+# 下载的文件
+*.zip
+*.tar.gz
+*.tds.zip
+
+# git
+.git/
