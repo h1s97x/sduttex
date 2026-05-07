@@ -19,15 +19,20 @@ unpack:
 # 运行所有测试
 test:
 	@echo "运行测试..."
-	@mkdir -p test/build
-	@mkdir -p build
-	@for f in test/test_*.tex; do \
+	@mkdir -p build/test
+	@cp src/sduthesis.ins build/test/
+	@cp src/sduthesis.dtx build/test/
+	@cp test/test_*.tex build/test/
+	@cp src/sdutex.sty build/test/ 2>/dev/null || true
+	@cd build/test && xelatex sduthesis.ins > /dev/null 2>&1
+	@cd build/test && xelatex sduthesis.dtx > /dev/null 2>&1
+	@cd build/test && for f in test_*.tex; do \
 		name=$$(basename $$f .tex); \
 		echo "=== 测试: $$name ==="; \
-		xelatex -interaction=nonstopmode -halt-on-error -output-directory=test/build $$f > /dev/null 2>&1 || echo "  失败: $$name"; \
+		xelatex -interaction=nonstopmode -halt-on-error -output-directory=. $$f > /dev/null 2>&1 || echo "  失败: $$name"; \
 	done
 	@echo "测试完成"
-	@ls -la test/build/*.pdf 2>/dev/null | wc -l | xargs -I {} echo "生成 {} 个 PDF"
+	@ls -la build/test/*.pdf 2>/dev/null | wc -l | xargs -I {} echo "生成 {} 个 PDF"
 
 # 安装到用户目录
 install:
