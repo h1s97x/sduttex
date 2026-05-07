@@ -1,9 +1,9 @@
 name: Test
 on:
   push:
-    branches: [master]
+    branches: [main]
   pull_request:
-    branches: [master]
+    branches: [main]
   workflow_dispatch:
 
 jobs:
@@ -18,11 +18,11 @@ jobs:
           package-file: .github/tl_packages
 
       - name: Run tests
-        run: l3build check
+        run: make test
 
-      - name: Upload test diffs on failure
+      - name: Upload logs on failure
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: test-diffs
-          path: build/test*/*.diff
+          name: test-logs
+          path: build/test/*.log
